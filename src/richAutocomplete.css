@@ -13,13 +13,14 @@
 }
 
 .rich-autocomplete .rich-autocomplete-list {
-    position: fixed;
+    position: static;
     border: 1px solid #ddd;
     background-color: #fff;
     margin: 0;
     padding: 0;
     overflow-y: auto;
     margin-left: -1px;
+    width: 100%;
 }
 
 .rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item,

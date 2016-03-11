@@ -1,20 +1,8 @@
 (function($) {
 
-    var requestAnimFrame = (function() {
-        return window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            function(callback) {
-                window.setTimeout(callback, 1000 / 60);
-            };
-    })();
-
     function RichAutocomplete(element, options) {
         this.element = element;
         this.options = options;
-
-        //store the element width so we know when we resize
-        this.elementWidth = this.element[0].offsetWidth;
 
         //store the original set of items
         this.items = this.options.items.slice();
@@ -43,8 +31,6 @@
         //create list control and add to the container
         this.list = $('<ul class="rich-autocomplete-list"></ul>');
 
-        //set the width and height of list
-        this.list.width(this.element.outerWidth());
         this.list.css('max-height', this.options.maxHeight + 'px');
         this.list.hide();
 
@@ -69,14 +55,6 @@
         this.element.keyup(function(event) {
             context.filterResults.apply(context, [event]);
         });
-
-        function checkElementSize() {
-            requestAnimFrame(checkElementSize);
-            context.resizeAutocomplete.apply(context);
-        }
-
-        //start loop that checks size
-        checkElementSize();
     };
 
     RichAutocomplete.prototype.showList = function() {
@@ -85,12 +63,6 @@
 
     RichAutocomplete.prototype.hideList = function(event) {
         this.list.hide();
-    };
-
-    RichAutocomplete.prototype.resizeAutocomplete = function() {
-        if(this.elementWidth !== this.element[0].offsetWidth) {
-            this.list.width(this.element.outerWidth());
-        }
     };
 
     RichAutocomplete.prototype.filterResults = function(event) {
