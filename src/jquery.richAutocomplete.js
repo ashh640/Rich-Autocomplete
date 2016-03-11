@@ -256,7 +256,7 @@
 
         options = $.extend(defaultOptions, options);
 
-        var a = new RichAutocomplete(this, options);
+        $(this).data('rich-autocomplete', new RichAutocomplete(this, options));
     };
 
 }(jQuery));
