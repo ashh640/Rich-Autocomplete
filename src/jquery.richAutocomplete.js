@@ -97,7 +97,11 @@
 
         //if the list is empty render the empty list item instead
         if (this.filteredItems.length === 0) {
-            var emptyItem = $('<li class="rich-autocomplete-list-item-empty">' + this.options.emptyRender() + '</li>');
+            var emptyItem = $('<li class="rich-autocomplete-list-item-empty"></li>');
+
+            //insert rendered item
+            emptyItem.append($(this.options.emptyRender()));
+
             this.list.append(emptyItem);
             return;
         }
@@ -112,7 +116,10 @@
         for (var idx = 0; idx < this.filteredItems.length; idx++) {
 
             //create list item
-            var listItem = $('<li class="rich-autocomplete-list-item" index="' + idx + '">' + this.options.render(this.filteredItems[idx]) + '</li>');
+            var listItem = $('<li class="rich-autocomplete-list-item" index="' + idx + '"></li>');
+
+            //insert the rendered template
+            listItem.append($(this.options.render(this.filteredItems[idx])));
 
             //store item data in element data
             listItem.data('item-data', this.filteredItems[idx]);
