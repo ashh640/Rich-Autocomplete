@@ -1,0 +1,36 @@
+.rich-autocomplete {
+    border: 1px solid #ddd;
+    height: 28px;
+}
+
+.rich-autocomplete input {
+    outline: none;
+    border: none;
+    width: calc(100% - 20px);
+    padding: 0 10px;
+    height: 100%;
+    font-size: 18px;
+}
+
+.rich-autocomplete .rich-autocomplete-list {
+    position: fixed;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    margin-left: -1px;
+}
+
+.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item,
+.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item-empty {
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #333;
+}
+
+.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item:hover,
+.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item.highlighted {
+    background-color: #0A64A0;
+    color: #fff;
+}
