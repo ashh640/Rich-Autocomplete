@@ -6,4 +6,29 @@
         items: country_list
     });
 
+    var people_list = [];
+
+    //generate some people
+    for(var i = 0; i < 100; i++) {
+        people_list.push({
+            name: chance.name(),
+            age: chance.age()
+        });
+    }
+
+    $('#name-field').richAutocomplete({
+        items: people_list,
+        extractText: function(item) {
+            return item.name;
+        },
+        filter: function(items, searchTerm) {
+            return items.filter(function(item) {
+                return item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
+            });
+        },
+        render: function(item) {
+            return '<p>' + item.name + '</p><small>' + item.age + '</small>';
+        },
+    });
+
 })();
