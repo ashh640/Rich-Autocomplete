@@ -53,7 +53,17 @@
         });
 
         this.element.keyup(function(event) {
-            context.filterResults.apply(context, [event]);
+            if(event.keyCode !== 38 && event.keyCode !== 40)
+                context.filterResults.apply(context, [event]);
+        });
+
+        this.element.keydown(function(event) {
+
+            //up arrow pressed
+            if(event.keyCode === 38) context.highlightUp.apply(context, [event]);
+
+            //down arrow pressed
+            if(event.keyCode === 40) context.highlightDown.apply(context, [event]);
         });
     };
 
@@ -63,6 +73,10 @@
 
     RichAutocomplete.prototype.hideList = function(event) {
         this.list.hide();
+
+        //remove any highlighting
+        this.list.find('.highlighted').removeClass('highlighted');
+
     };
 
     RichAutocomplete.prototype.filterResults = function(event) {
@@ -98,7 +112,7 @@
         for (var idx = 0; idx < this.filteredItems.length; idx++) {
 
             //create list item
-            var listItem = $('<li class="rich-autocomplete-list-item">' + this.options.render(this.filteredItems[idx]) + '</li>');
+            var listItem = $('<li class="rich-autocomplete-list-item" index="' + idx + '">' + this.options.render(this.filteredItems[idx]) + '</li>');
 
             //store item data in element data
             listItem.data('item-data', this.filteredItems[idx]);
@@ -124,6 +138,91 @@
 
         //update the list
         this.filterResults();
+    };
+
+    RichAutocomplete.prototype.highlightUp = function () {
+        //find if any items are currently highlighted
+        var highlighted = this.list.find('.highlighted');
+
+        if(highlighted.length === 0) {
+            // no item is currently highlighted so hide the list
+            this.hideList();
+        }
+        else if(this.listVisible() && this.filteredItems.length > 0) {
+
+            var listItems = this.list.find('.rich-autocomplete-list-item');
+
+            //get highlighted element index
+            var currentIndex = +highlighted.first().attr('index');
+            var minIndex = +listItems.first().attr('index');
+
+            if(currentIndex > minIndex) {
+                var previousSibling = highlighted.first().prev('.rich-autocomplete-list-item');
+
+                //ensure we have a sibling to move to
+                if(previousSibling.length === 0) return;
+
+                //dehighlight previously highlighted
+                highlighted.removeClass('highlighted');
+
+                //highlight the next item in the list
+                previousSibling.addClass('highlighted');
+            }
+            else if(currentIndex === minIndex) {
+                this.hideList();
+            }
+        }
+    };
+
+
+    RichAutocomplete.prototype.highlightDown = function () {
+        //find if any items are currently highlighted
+        var highlighted = this.list.find('.highlighted');
+
+        if(highlighted.length === 0) {
+
+            //if list is hidden show it
+            if(!this.listVisible()) this.showList();
+
+            // no item is currently highlighted so highlight first element
+            this.list.find('.rich-autocomplete-list-item').first().addClass('highlighted');
+        }
+        else if(this.listVisible()) {
+
+            var listItems = this.list.find('.rich-autocomplete-list-item');
+
+            //get highlighted element index
+            var currentIndex = +highlighted.first().attr('index');
+            var maxIndex = +listItems.last().attr('index');
+
+            //check to make sure we arent at the bottom
+            if(currentIndex < maxIndex) {
+                var nextSibling = highlighted.first().next('.rich-autocomplete-list-item');
+
+                //ensure we have a sibling to move to
+                if(nextSibling.length === 0) return;
+
+                //dehighlight previously highlighted
+                highlighted.removeClass('highlighted');
+
+                //highlight the next item in the list
+                nextSibling.addClass('highlighted');
+
+                //we may need to scroll the newly highlighted option into view
+                // var listHeight = this.list.height();
+                // var listOffset = this.list.offset();
+                // var scrollPosition = this.list.scrollTop();
+                // var nextSiblingOffset = nextSibling[0].getBoundingClientRect();
+                //
+                // if(nextSiblingOffset.top > ((listHeight + listOffset.top) - scrollPosition)) {
+                //     this.list.scrollTop(nextSiblingOffset.bottom - (listHeight));
+                // }
+            }
+        }
+    };
+
+    RichAutocomplete.prototype.listVisible = function () {
+        return this.list[0].style.display !== 'none';
     };
 
     $.fn.richAutocomplete = function(options) {
