@@ -39,6 +39,29 @@
 
         //add the list to the container
         this.container.append(this.list);
+
+        //create css spinner
+        var spinnerHtml = '<div class="spinner-container">';
+        spinnerHtml += '<div class="spinner">';
+        spinnerHtml += '<div class="spinner-node node1"></div>';
+        spinnerHtml += '<div class="spinner-node node2"></div>';
+        spinnerHtml += '<div class="spinner-node node3"></div>';
+        spinnerHtml += '<div class="spinner-node node4"></div>';
+        spinnerHtml += '<div class="spinner-node node5"></div>';
+        spinnerHtml += '<div class="spinner-node node6"></div>';
+        spinnerHtml += '<div class="spinner-node node7"></div>';
+        spinnerHtml += '<div class="spinner-node node8"></div>';
+        spinnerHtml += '</div>';
+        spinnerHtml += '</div>';
+
+        //create spinner element
+        this.spinner = $(spinnerHtml);
+
+        //initially hide the element
+        this.spinner.hide();
+
+        //add to container
+        this.container.append(this.spinner);
     };
 
     RichAutocomplete.prototype.bindEvents = function() {
@@ -155,7 +178,7 @@
         //extract data from selected item
         var highlighted = this.list.find('.highlighted');
 
-        if(highlighted.length === 0) return;
+        if (highlighted.length === 0) return;
 
         var itemData = highlighted.first().data('item-data');
 
@@ -203,8 +226,7 @@
 
                 if (highlightBottom >= scrollBottom) {
                     return this.list.scrollTop((highlightBottom - listHeight) > 0 ? highlightBottom - listHeight : 0);
-                }
-                else if (highlightTop < scrollTop) {
+                } else if (highlightTop < scrollTop) {
                     return this.list.scrollTop(highlightTop);
                 }
 
@@ -260,8 +282,7 @@
 
                 if (highlightBottom >= scrollBottom) {
                     return this.list.scrollTop((highlightBottom - listHeight) > 0 ? highlightBottom - listHeight : 0);
-                }
-                else if (highlightTop < scrollTop) {
+                } else if (highlightTop < scrollTop) {
                     return this.list.scrollTop(highlightTop);
                 }
             }
