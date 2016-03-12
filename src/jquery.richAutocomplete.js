@@ -138,6 +138,16 @@
             context.selectItem.apply(context, [itemData]);
         };
 
+        //hover item function
+        var hoverItem = function(event) {
+            context.hoverItem.apply(context, [$(this)]);
+        };
+
+        //unhover item function
+        var unhoverItem = function(event) {
+            context.unhoverItem.apply(context, [$(this)]);
+        };
+
         //loop through each item and render
         for (var idx = 0; idx < this.filteredItems.length; idx++) {
 
@@ -153,9 +163,29 @@
             //add click event listener
             listItem.mousedown(selectItem);
 
+            //add hover event
+            listItem.mouseover(hoverItem);
+
+            //add mouseout event
+            listItem.mouseout(unhoverItem);
+
             //add list item to virtual list control
             this.list.append(listItem);
         }
+    };
+
+    RichAutocomplete.prototype.hoverItem = function(item) {
+
+        //remove highlight from any highlighted element
+        this.list.find('.highlighted').removeClass('highlighted');
+
+        //highlight the hovered item
+        item.addClass('highlighted');
+    };
+
+    RichAutocomplete.prototype.unhoverItem = function(item) {
+        //remove hover effect from element
+        item.removeClass('highlighted');
     };
 
     RichAutocomplete.prototype.selectItem = function(item) {
@@ -225,9 +255,9 @@
                 var highlightBottom = highlightTop + previousSibling.outerHeight();
 
                 if (highlightBottom >= scrollBottom) {
-                    return this.list.scrollTop((highlightBottom - listHeight) > 0 ? highlightBottom - listHeight : 0);
+                    this.list.scrollTop((highlightBottom - listHeight) > 0 ? highlightBottom - listHeight : 0);
                 } else if (highlightTop < scrollTop) {
-                    return this.list.scrollTop(highlightTop);
+                    this.list.scrollTop(highlightTop);
                 }
 
             } else if (currentIndex === minIndex) {
@@ -238,6 +268,9 @@
 
 
     RichAutocomplete.prototype.highlightDown = function() {
+
+        var listHeight, scrollTop, scrollBottom, highlightTop, highlightBottom;
+
         //find if any items are currently highlighted
         var highlighted = this.list.find('.highlighted');
 
@@ -247,7 +280,11 @@
             if (!this.listVisible()) this.showList();
 
             // no item is currently highlighted so highlight first element
-            this.list.find('.rich-autocomplete-list-item').first().addClass('highlighted');
+            var topItem = this.list.find('.rich-autocomplete-list-item').first().addClass('highlighted');
+
+            //scroll to top of the list
+            this.list.scrollTop(0);
+
         } else if (this.listVisible()) {
 
             var listItems = this.list.find('.rich-autocomplete-list-item');
@@ -271,19 +308,19 @@
 
                 //we may need to scroll the newly highlighted option into view
 
-                var listHeight = this.list.height();
-                var scrollTop = this.list.scrollTop();
-                var scrollBottom = scrollTop + listHeight;
+                listHeight = this.list.height();
+                scrollTop = this.list.scrollTop();
+                scrollBottom = scrollTop + listHeight;
 
                 //get the position of the highlighted option
-                var highlightTop = nextSibling.position().top + scrollTop;
-                var highlightBottom = highlightTop + nextSibling.outerHeight();
+                highlightTop = nextSibling.position().top + scrollTop;
+                highlightBottom = highlightTop + nextSibling.outerHeight();
 
 
                 if (highlightBottom >= scrollBottom) {
-                    return this.list.scrollTop((highlightBottom - listHeight) > 0 ? highlightBottom - listHeight : 0);
+                    this.list.scrollTop((highlightBottom - listHeight) > 0 ? highlightBottom - listHeight : 0);
                 } else if (highlightTop < scrollTop) {
-                    return this.list.scrollTop(highlightTop);
+                    this.list.scrollTop(highlightTop);
                 }
             }
         }

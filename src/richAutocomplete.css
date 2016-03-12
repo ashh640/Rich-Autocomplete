@@ -32,7 +32,7 @@
     color: #333;
 }
 
-.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item:hover,
+/*.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item:hover,*/
 .rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item.highlighted {
     background-color: #0A64A0;
     color: #fff;
