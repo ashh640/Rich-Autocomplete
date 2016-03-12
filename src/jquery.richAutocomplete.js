@@ -64,6 +64,9 @@
 
             //down arrow pressed
             if (event.keyCode === 40) context.highlightDown.apply(context, [event]);
+
+            //enter key pressed
+            if (event.keyCode === 13) context.selectHighlighted.apply(context, [event]);
         });
     };
 
@@ -147,6 +150,22 @@
         this.filterResults();
     };
 
+    RichAutocomplete.prototype.selectHighlighted = function() {
+
+        //extract data from selected item
+        var highlighted = this.list.find('.highlighted');
+
+        if(highlighted.length === 0) return;
+
+        var itemData = highlighted.first().data('item-data');
+
+        //select the highlighted item
+        this.selectItem(itemData);
+
+        //hide list after selection
+        this.hideList();
+    };
+
     RichAutocomplete.prototype.highlightUp = function() {
         //find if any items are currently highlighted
         var highlighted = this.list.find('.highlighted');
@@ -176,11 +195,16 @@
 
                 var listHeight = this.list.height();
                 var scrollTop = this.list.scrollTop();
+                var scrollBottom = scrollTop + listHeight;
 
                 //get the position of the highlighted option
                 var highlightTop = previousSibling.position().top + scrollTop;
+                var highlightBottom = highlightTop + previousSibling.outerHeight();
 
-                if (highlightTop < scrollTop) {
+                if (highlightBottom >= scrollBottom) {
+                    return this.list.scrollTop((highlightBottom - listHeight) > 0 ? highlightBottom - listHeight : 0);
+                }
+                else if (highlightTop < scrollTop) {
                     return this.list.scrollTop(highlightTop);
                 }
 
@@ -236,6 +260,9 @@
 
                 if (highlightBottom >= scrollBottom) {
                     return this.list.scrollTop((highlightBottom - listHeight) > 0 ? highlightBottom - listHeight : 0);
+                }
+                else if (highlightTop < scrollTop) {
+                    return this.list.scrollTop(highlightTop);
                 }
             }
         }
