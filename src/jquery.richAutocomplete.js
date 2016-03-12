@@ -173,6 +173,17 @@
 
                 //highlight the next item in the list
                 previousSibling.addClass('highlighted');
+
+                var listHeight = this.list.height();
+                var scrollTop = this.list.scrollTop();
+
+                //get the position of the highlighted option
+                var highlightTop = previousSibling.position().top + scrollTop;
+
+                if (highlightTop < scrollTop) {
+                    return this.list.scrollTop(highlightTop);
+                }
+
             } else if (currentIndex === minIndex) {
                 this.hideList();
             }
