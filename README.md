@@ -6,6 +6,8 @@ Complete with keyboard navigation for accessibility.
 
 See several demos of Rich-Autocomplete in action here: http://beginninghere.co.uk/richautocomplete/example/
 
+![Image of Rich Autocomplete](http://beginninghere.co.uk/richautocomplete/example-image.png)
+
 ## Installation
 
 There are several ways in which you can get Rich-Autocomplete and add it to your project.
