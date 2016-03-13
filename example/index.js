@@ -37,7 +37,7 @@
         },
         render: function(item) {
             return '<p>' + item.name + '</p><small>' + item.age + '</small>';
-        },
+        }
     });
 
     /*
@@ -86,6 +86,158 @@
         loadPage: loadServerPage,
         paging: true,
         pageSize: 20
+    });
+
+    /*
+        Emoji dynamic list
+    */
+
+    var emoji_list = [{
+        name: 'Angel',
+        image: 'angel.svg'
+    }, {
+        name: 'Angry',
+        image: 'angry.svg'
+    }, {
+        name: 'Anxious',
+        image: 'anxious.svg'
+    }, {
+        name: 'Appauled',
+        image: 'appauled.svg'
+    }, {
+        name: 'Astounded',
+        image: 'astounded.svg'
+    }, {
+        name: 'Chuckle',
+        image: 'chuckle.svg'
+    }, {
+        name: 'Dead',
+        image: 'dead.svg'
+    }, {
+        name: 'Devil',
+        image: 'devil.svg'
+    }, {
+        name: 'Doctor',
+        image: 'doctor.svg'
+    }, {
+        name: 'Duh',
+        image: 'duh.svg'
+    }, {
+        name: 'Embarrassed',
+        image: 'embarrassed.svg'
+    }, {
+        name: 'Emotionless',
+        image: 'emotionless.svg'
+    }, {
+        name: 'Fuming',
+        image: 'fuming.svg'
+    }, {
+        name: 'Giggle',
+        image: 'giggle.svg'
+    }, {
+        name: 'Grin',
+        image: 'grin.svg'
+    }, {
+        name: 'Happy',
+        image: 'happy.svg'
+    }, {
+        name: 'Huffing',
+        image: 'huffing.svg'
+    }, {
+        name: 'Kiss Heart',
+        image: 'kiss-heart.svg'
+    }, {
+        name: 'Kiss',
+        image: 'kiss.svg'
+    }, {
+        name: 'Laughing',
+        image: 'laughing.svg'
+    }, {
+        name: 'Meh',
+        image: 'meh.svg'
+    }, {
+        name: 'Miffed',
+        image: 'miffed.svg'
+    }, {
+        name: 'Moody',
+        image: 'moody.svg'
+    }, {
+        name: 'Nervous Laugh',
+        image: 'nervous-laugh.svg'
+    }, {
+        name: 'Ooh',
+        image: 'ooh.svg'
+    }, {
+        name: 'Panic',
+        image: 'panic.svg'
+    }, {
+        name: 'Pleased',
+        image: 'pleased.svg'
+    }, {
+        name: 'Really Happy',
+        image: 'really-happy.svg'
+    }, {
+        name: 'Regret',
+        image: 'regret.svg'
+    }, {
+        name: 'Sad',
+        image: 'sad.svg'
+    }, {
+        name: 'Sleeping',
+        image: 'sleeping.svg'
+    }, {
+        name: 'Smile',
+        image: 'smile.svg'
+    }, {
+        name: 'So So',
+        image: 'so-so.svg'
+    }, {
+        name: 'Surprised',
+        image: 'surprised.svg'
+    }, {
+        name: 'Sweating',
+        image: 'sweating.svg'
+    }, {
+        name: 'Upside Down Face',
+        image: 'upside-down.svg'
+    }, {
+        name: 'Welling Up',
+        image: 'welling-up.svg'
+    }, {
+        name: 'Whistle',
+        image: 'whistle.svg'
+    }, {
+        name: 'Wink',
+        image: 'wink.svg'
+    }, {
+        name: 'Worried',
+        image: 'worried.svg'
+    }];
+
+    var loadEmojiPage = function(searchTerm, pageNumber, pageSize) {
+        if (searchTerm === '')
+            return emoji_list.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize);
+
+        var searchedEmojis = emoji_list.filter(function(item) {
+            return item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
+        });
+
+        return searchedEmojis.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize);
+    };
+
+    $('#emoji-field').richAutocomplete({
+        loadPage: loadEmojiPage,
+        extractText: function(item) {
+            return item.name;
+        },
+        render: function(item) {
+            return '<img class="icon" src="emojis/' + item.image + '" /><p class="icon-name">' + item.name + '</p>';
+        },
+        select: function(item) {
+            $('#selected-item').text(item.name);
+        },
+        paging: true,
+        pageSize: 10
     });
 
 })();

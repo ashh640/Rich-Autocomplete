@@ -32,9 +32,9 @@
         </p>
 
         <pre class="prettyprint">
-var country_list = ["Afghanistan", "Albania", "Algeria", ....];
+var country_list = [&quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, ....];
 
-$('#input-field').richAutocomplete({
+$(&apos;#input-field&apos;).richAutocomplete({
     items: country_list
 });
 </pre>
@@ -50,13 +50,13 @@ $('#input-field').richAutocomplete({
         <p class="desc">
             Some autocomplete lists may require more detailed items in the lists, with more information than a simple string. To do this you can provide some further options to configure how the list items should display, but also how to search the items and how
             to extract the main text from each time when the item is selected.
-            <br /><br />
-            Example Code:
+            <br />
+            <br /> Example Code:
         </p>
-<pre class="prettyprint">
+        <pre class="prettyprint">
 var people_list = [
     {
-        name: 'John Smith',
+        name: &apos;John Smith&apos;,
         age: 54
     },
     {
@@ -64,7 +64,7 @@ var people_list = [
     }
 ];
 
-$('#name-field').richAutocomplete({
+$(&apos;#name-field&apos;).richAutocomplete({
     items: people_list,
     extractText: function(item) {
         return item.name;
@@ -75,20 +75,18 @@ $('#name-field').richAutocomplete({
         });
     },
     render: function(item) {
-        return '&lt;p&gt;' + item.name + '&lt;/p&gt;&lt;small&gt;' + item.age + '&lt;/small&gt;';
+        return &apos;&amp;lt;p&amp;gt;&apos; + item.name + &apos;&amp;lt;/p&amp;gt;&amp;lt;small&amp;gt;&apos; + item.age + &apos;&amp;lt;/small&amp;gt;&apos;;
     },
 });
 </pre>
-<hr />
-<p class="desc">
-    The <code>extractText</code> function should take in one parameter which will be an item from the array of items. It should return the main text of the item.
-    <br />
-    <br />
-    The <code>filter</code> function should take in two parameters. The first will be the list of all items and the second is the search term. This function should return any items that meet the search term.
-    <br />
-    <br />
-    The <code>render</code> function should take in one parameter which will be an item from the array of items and return either a string containing the HTML that should be within the list item or an HTMLElement or jQuery element.
-</p>
+        <hr />
+        <p class="desc">
+            The <code>extractText</code> function should take in one parameter which will be an item from the array of items. It should return the main text of the item.
+            <br />
+            <br /> The <code>filter</code> function should take in two parameters. The first will be the list of all items and the second is the search term. This function should return any items that meet the search term.
+            <br />
+            <br /> The <code>render</code> function should take in one parameter which will be an item from the array of items and return either a string containing the HTML that should be within the list item or an HTMLElement or jQuery element.
+        </p>
     </div>
 
 
@@ -97,6 +95,37 @@ $('#name-field').richAutocomplete({
         <div class="container">
             <input id="country-field" placeholder="Select a Country" />
         </div>
+        <hr />
+        <p class="desc">
+            It may not be required to load all the possible options at once, in which case <code>paging</code> can be enabled. This will load a specific number of items and when the user scrolls the list near the bottom the next set of items will be loaded.
+            <br />
+            <br /> Example Code:
+        </p>
+        <pre class="prettyprint">
+var loadPage = function(searchTerm, pageNumber, pageSize) {
+    if (searchTerm === &apos;&apos;)
+        return country_list.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize);
+
+    var searchedCountries = country_list.filter(function(item) {
+        return item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
+    });
+
+    return searchedCountries.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize);
+};
+
+$(&apos;#country-field&apos;).richAutocomplete({
+    loadPage: loadPage,
+    paging: true,
+    pageSize: 20
+});
+</pre>
+
+        <p class="desc">
+            To allow dynamic loading of items set the <code>paging</code> options to <code>true</code>. You should also set the <code>pageSize</code> option which should define the number of items each page will contain.
+            <br />
+            <br /> A <code>loadPage</code> function should be provided. This function should take in 3 arguments, the first of which will contain the current searchTerm. The second will contain the page number and the third will contain the page size. This
+            function should be responisble for returning an array of results that match the search term and are on the correct page.
+        </p>
     </div>
 
 
@@ -105,7 +134,95 @@ $('#name-field').richAutocomplete({
         <div class="container">
             <input id="country-server-field" placeholder="Select a Country" />
         </div>
+        <hr />
+        <p class="desc">
+            If the items in the list are being loaded from a server it may be desirable to reduce the load on the server by limiting the number of results the server returns at once. This can be done by enabling <code>paging</code> and having the <code>loadPage</code>
+            function return a jQuery deferred promise. This can be used to have an ajax request load the next page of options. The function should still be responsible for filtering and returning the correct page.
+            <br /><br />
+            Example Code:
+<pre class="prettyprint">
+var loadServerPage = function(searchTerm, pageNumber, pageSize) {
+    var deferred = $.Deferred();
+
+    setTimeout(function() {
+        if (searchTerm === &apos;&apos;)
+            deferred.resolve(country_list.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize));
+
+        var searchedCountries = country_list.filter(function(item) {
+            return item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
+        });
+
+        deferred.resolve(searchedCountries.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize));
+    }, 1000);
+
+    return deferred.promise();
+};
+
+$(&apos;#country-server-field&apos;).richAutocomplete({
+    loadPage: loadServerPage,
+    paging: true,
+    pageSize: 20
+});
+</pre>
+
+<p class="desc">
+    Note the example above uses many of the same techniques as the previous example, but uses a <code>setTimeout</code> to simulate the server loading the next page of items - this is unrealistic in production code, however it is similar enough to demonstrate the code that would be required.
+</p>
+        </p>
     </div>
+
+    <div class="panel">
+        <h3>Dynamic List - Paging and Custom Rendering - Emojis</h3>
+        <div class="container">
+            <input id="emoji-field" placeholder="Select an Emoji" />
+            <p class="selected">Selected Item: <span id="selected-item">None</span></p>
+        </div>
+        <hr />
+        <p class="desc">
+            Paging lists can also have custom rendered items as well. The example above shows how images can be incorporated into list items. Also note the text beneath the list that shows the selected item. This can be achieved by definging the <code>select</code> options, which should be a function that should accept one argument which will contain the item that has been selected.
+            <br /><br />
+            Example Code:
+<pre class="prettyprint">
+var emoji_list = [{
+    name: &apos;Angel&apos;,
+    image: &apos;angel.svg&apos;
+}, {
+    name: &apos;Angry&apos;,
+    image: &apos;angry.svg&apos;
+}, {
+...
+}];
+
+var loadEmojiPage = function(searchTerm, pageNumber, pageSize) {
+    if (searchTerm === &apos;&apos;)
+        return emoji_list.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize);
+
+    var searchedEmojis = emoji_list.filter(function(item) {
+        return item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
+    });
+
+    return searchedEmojis.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize);
+};
+
+$(&apos;#emoji-field&apos;).richAutocomplete({
+    loadPage: loadEmojiPage,
+    extractText: function(item) {
+        return item.name;
+    },
+    render: function(item) {
+        return &apos;&lt;img class=&quot;icon&quot; src=&quot;emojis/&apos; + item.image + &apos;&quot; /&gt;&lt;p class=&quot;icon-name&quot;&gt;&apos; + item.name + &apos;&lt;/p&gt;&apos;;
+    },
+    select: function(item) {
+        $(&apos;#selected-item&apos;).text(item.name);
+    },
+    paging: true,
+    pageSize: 10
+});
+</pre>
+
+        </p>
+    </div>
+
 
 
     <script src="http://code.jquery.com/jquery-2.2.1.min.js" integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00=" crossorigin="anonymous"></script>
@@ -146,6 +263,10 @@ $('#name-field').richAutocomplete({
             margin: 0;
         }
 
+        .selected {
+            margin: 10px 0;
+        }
+
         .desc {
             line-height: 25px;
         }
@@ -165,6 +286,16 @@ $('#name-field').richAutocomplete({
             border: 1px solid #DCDCDD;
             margin: 15px;
             padding: 15px;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+        }
+
+        .icon-name {
+            display: inline-block;
         }
 
         ::-webkit-input-placeholder {
