@@ -179,16 +179,27 @@ $('#my-field').richAutocomplete({
 Details on each option are:
 
 -`maxHeight`: This sets the maximum height of the list that appear when the input has focus.
+
 -`items`: This should be set to an array or string or objects - this should only be used when the list does not use paging. If paging is enabled the `loadPage` function will be used instead.
+
 -`paging`: If true this will enable paging and will allow loading of items in limited amounts.
+
 -`pageSize`: If paging is enabled this should be set to the size of the number of items that will be returned in each page.
+
 -`showSpinner`: If true a spinner will show when loading the next page.
+
 -`debounce`: This should represent the number of milliseconds delay after the user finishes typing a search query before loading begins. This is only applicable when paging is enabled.
+
 -`extractText`: This is a function that should accept one parameter which will be an item in the list. This function should return a string that represents this item. This should be used when an array of object is specified rather than an array of strings.
+
 -`filter`: This is used when paging is disabled and the data is a list of objects rather than strings. This function should accept two parameters, the first will be a list of all the items and the second is the current search term. It should return any items in the array that matches the search term.
+
 -`render`: This is a function that should accept one argument. It should return an string of HTML that will be used in the list item, or a HTML Element or jQuery element. This is only required if you want each list item to display more than a simple string.
+
 -`emptyRender`: This function can be used to return an list item to display when no items match a search term. It should return a string of HTML, an HTML element or jQuery element.
+
 -`select`: This function will be called if specified when an item in the list has been selected.
+
 -`loadPage`: This function is required when paging is enabled. It should accept three arguments, the first is the search term, the second is the page number and the third is the page size. This function should return an array of elements that meet the search term and on the correct page. It can also return a jQuery promise that should resolve with an array matching the search term and correct page. See demo page for examples of how to use this.
 
 ## Contributing
