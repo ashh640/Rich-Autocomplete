@@ -216,6 +216,7 @@ Have an idea to improve Rich-Autocomplete? Either let us know or add it yourself
 
 ## History
 
+v0.1.1 - Adding bower and npm support - documenting options.
 v0.1.0 - Initial implementation and documentation
 
 Planned Features:
