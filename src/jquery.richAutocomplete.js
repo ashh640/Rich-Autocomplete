@@ -23,6 +23,8 @@
             //set current page initially to zero
             this.currentPage = 0;
             this.loading = false;
+            this.allItemsLoaded = false;
+            this.debounce = null;
 
             //load the first page
             this.loadPage(0);
@@ -102,8 +104,8 @@
         });
 
         this.list.scroll(function(event) {
-            //only applicable if paging is enabled and we arent currently loading
-            if(context.options.paging === false || context.loading === true) return;
+            //only applicable if paging is enabled and we arent currently loading or have loaded all pages
+            if(context.options.paging === false || context.loading === true || context.allItemsLoaded === true) return;
 
             //collect some positioning and size values
             var scrollTop = context.list.scrollTop();
@@ -130,6 +132,8 @@
     };
 
     RichAutocomplete.prototype.filterResults = function(event) {
+        var context = this;
+
         var searchTerm = this.element.val();
 
         //filter items based on search terms
@@ -139,19 +143,31 @@
             //update the list
             this.updateList();
         } else {
-            //reset to the first page
-            this.currentPage = 0;
 
-            //load results dynamically
-            this.loadPage(0);
+            if(this.debounce) {
+                clearTimeout(this.debounce);
+            }
+
+            this.debounce = setTimeout(function() {
+                //reset to the first page
+                context.currentPage = 0;
+                context.allItemsLoaded = false;
+
+                //cancel any current loading
+                context.loading = false;
+                context.spinner.hide();
+
+                //load results dynamically
+                context.loadPage(0);
+            }, searchTerm === '' ? 0 : this.options.debounce);
         }
     };
 
     RichAutocomplete.prototype.loadPage = function(pageNumber) {
         var context = this;
 
-        //if we are currently loading then stop here
-        if(this.loading === true) return;
+        //if we are currently loading or have loaded all pages then stop here
+        if(this.loading === true || (pageNumber !== 0 && this.allItemsLoaded === true)) return;
 
         //remember we are in fact loading so dont load another page in the mean time
         this.loading = true;
@@ -162,6 +178,7 @@
         //empty list if first page
         if (pageNumber === 0) {
             this.filteredItems = [];
+            this.allItemsLoaded = false;
         }
 
         var searchTerm = this.element.val();
@@ -184,6 +201,11 @@
 
                 //inform that we have finished loading
                 context.loading = false;
+
+                //if we are on the last page then remember this to prevent unnessesary further loading
+                if(result.length === 0 || result.length < context.pageSize) {
+                    context.allItemsLoaded = true;
+                }
             });
 
         } else {
@@ -196,12 +218,17 @@
             //hide the spinner as we have finished loading
             this.spinner.hide();
             this.loading = false;
+
+            //if we are on the last page then remember this to prevent unnessesary further loading
+            if(nextPage.length === 0 || nextPage.length < this.pageSize) {
+                this.allItemsLoaded = true;
+            }
         }
     };
 
     RichAutocomplete.prototype.loadNextPage = function() {
-        //dont do anything if we are currently loading
-        if(this.loading) return;
+        //dont do anything if we are currently loading or we have loaded all pages
+        if(this.loading === true || this.allItemsLoaded === true) return;
 
         //load the next page and remember which page we are now on
         this.loadPage(++this.currentPage);
@@ -434,6 +461,7 @@
             paging: false,
             pageSize: 0,
             showSpinner: true,
+            debounce: 500,
             extractText: function(item) {
                 return item;
             },
