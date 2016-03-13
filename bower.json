@@ -5,7 +5,7 @@
     "Ashley Hunter"
   ],
   "description": "A simple yet powerful autocomplete jQuery plugin.",
-  "main": "src/jquery.richAutocomplete.min.js",
+  "main": "dist/jquery.richAutocomplete.min.js",
   "moduleType": [],
   "keywords": [
     "jquery",
