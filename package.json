@@ -1,0 +1,33 @@
+{
+  "name": "rich-autocomplete",
+  "version": "0.1.0",
+  "description": "A simple yet powerful autocomplete jQuery plugin.",
+  "main": "dist/jquery.richAutocomplete.min.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://ashh640@github.com/ashh640/Rich-Autocomplete.git"
+  },
+  "keywords": [
+    "jquery",
+    "autocomplete",
+    "typeahead",
+    "list",
+    "rich",
+    "fast",
+    "lazy",
+    "load",
+    "dynamic"
+  ],
+  "author": "Ashley Hunter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashh640/Rich-Autocomplete/issues"
+  },
+  "homepage": "https://github.com/ashh640/Rich-Autocomplete#readme"
+}
