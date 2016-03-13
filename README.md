@@ -53,7 +53,7 @@ $('#my-field').richAutocomplete({
 
 This will create the control and add the list with basic search capabilities.
 
-# Custom Rendering
+### Custom Rendering
 
 You may also want to create a list of objects rather than strings. You can also customize how the list items are displayed. To do this use the following in your javascript:
 
@@ -85,7 +85,7 @@ $('#my-field').richAutocomplete({
 
 For more in depth information on each of the options see down below.
 
-# Paging
+### Paging
 
 Paging can be used to load a limited number of items at any time. Only when more items are required will they be added to the list. Use the following javascript:
 
@@ -110,7 +110,7 @@ $('#my-field').richAutocomplete({
 });
 ```
 
-# Paging - Loading data from server
+### Paging - Loading data from server
 
 The following example simulates data being loaded from a server in pages, however it is very simple to replace the timeout with an ajax request. Add the following to your javascript:
 
@@ -143,7 +143,7 @@ $('#my-field').richAutocomplete({
 
 To see the examples in action and with more detail on how they work see the demo page linked at the top.
 
-## Options
+### Options
 
 The following options can be set to configure how the control will work. The following are show the default values:
 
