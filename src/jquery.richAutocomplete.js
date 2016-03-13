@@ -33,6 +33,9 @@
         //store all the items
         this.filteredItems = this.items.slice();
 
+        //store selected items for multiselect list
+        this.selectedItems = [];
+
         //prepare element
         this.init();
 
@@ -96,16 +99,65 @@
 
         //add to container
         this.container.append(this.spinner);
+
+        //if multi select is enabled then add further dom elements
+        if(this.options.multiSelect === true) this.initMultiSelect();
+    };
+
+    RichAutocomplete.prototype.initMultiSelect = function () {
+        var context = this;
+
+        //ensure only applied when multiSelect is enabled
+        if(this.options.multiSelect === false) return;
+
+        //add class to container for specific styling
+        this.container.addClass('multi');
+
+        //capture clicks in container to trigger input focus
+        this.container.click(function() {
+            context.element.focus();
+        });
+
+        //check if the input has a placeholder
+        var placeholder = this.element.attr('placeholder');
+
+        if(placeholder) {
+            //create fake placeholder
+            this.placeholder = $('<p class="rich-autocomplete-placeholder">' + placeholder + '</p>');
+
+            //propagate the placeholder click
+            this.placeholder.click(function() {
+                context.element.focus();
+            });
+
+            this.container.append(this.placeholder);
+
+            //remove current placeholder
+            this.element.attr('placeholder', null);
+        }
+
+        this.element.wrap('<ul class="rich-autocomplete-multiselect"><li class="search-field"></li></ul>');
+
+        //store the list of selected elements
+        this.selectedList = this.element.parent().parent();
     };
 
     RichAutocomplete.prototype.bindEvents = function() {
         var context = this;
 
         this.element.focus(function(event) {
+
+            //if we have a fake placeholder - hide it
+            if(context.placeholder) context.placeholder.hide();
+
             context.showList.apply(context, [event]);
         });
 
         this.element.blur(function(event) {
+
+            //if we have a placeholder and no selected items then show it
+            if(context.placeholder && context.selectedItems.length === 0) context.placeholder.show();
+
             context.hideList.apply(context, [event]);
         });
 
@@ -321,6 +373,13 @@
             //create list item
             var listItem = $('<li class="rich-autocomplete-list-item" index="' + idx + '"></li>');
 
+            //check if item has already been selected - multi select only
+            if(this.options.multiSelect === true) {
+                if(this.itemIsSelected(this.filteredItems[idx])) {
+                    listItem.addClass('rich-autocomplete-disabled');
+                }
+            }
+
             //insert the rendered template
             listItem.append($(this.options.render(this.filteredItems[idx])));
 
@@ -365,6 +424,9 @@
 
         //inform the select option
         this.options.select(item);
+
+        //if multi selection is enabled then we need to add this to the list
+        if(this.options.multiSelect === true) this.addSelectedItem(item);
 
         //update the list
         this.filterResults();
@@ -497,6 +559,47 @@
         return this.list[0].style.display !== 'none';
     };
 
+    RichAutocomplete.prototype.addSelectedItem = function (item) {
+        //this is only applicable if multiselect is enabled
+        if(this.options.multiSelect === false) return;
+
+        //dont add item if already selected - just clear the textbox
+        if(this.itemIsSelected(item)) {
+            this.element.val('');
+            return;
+        }
+
+        //extract the text from the item
+        var extractedText = this.options.extractText(item);
+
+        //add the item to the list
+        $('<li class="selected-item">' + extractedText + '</li>').insertBefore(this.element.parent());
+
+        //store the selected items
+        this.selectedItems.push(item);
+
+        //clear the search field
+        this.element.val('');
+
+        var containerHeight = $('.rich-autocomplete-multiselect').first().get(0).scrollHeight;
+
+        //resize the container accordingly
+        this.container.height(containerHeight);
+    };
+
+    RichAutocomplete.prototype.itemIsSelected = function (item) {
+        var isSelected = false;
+
+        this.selectedItems.forEach(function(selectedItem) {
+            if(selectedItem === item) {
+                isSelected = true;
+                return false;
+            }
+        });
+
+        return isSelected;
+    };
+
     $.fn.richAutocomplete = function(options) {
 
         var defaultOptions = {
@@ -506,6 +609,7 @@
             pageSize: 0,
             showSpinner: true,
             debounce: 500,
+            multiSelect: false,
             extractText: function(item) {
                 return item;
             },

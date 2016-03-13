@@ -240,4 +240,12 @@
         pageSize: 10
     });
 
+    /*
+        Simple country multiselect
+    */
+    $('#simple-multi-field').richAutocomplete({
+        items: country_list,
+        multiSelect: true
+    });
+
 })();

@@ -54,10 +54,63 @@ SOFTWARE.*/
     color: #333;
 }
 
-/*.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item:hover,*/
 .rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item.highlighted {
     background-color: #0A64A0;
     color: #fff;
+}
+
+.rich-autocomplete-placeholder {
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px 10px;
+    color: #ddd;
+    cursor: text;
+}
+
+/*
+    Multi Select
+*/
+
+.rich-autocomplete .rich-autocomplete-multiselect {
+    margin: 0;
+    padding: 0 5px;
+    list-style-type: none;
+    height: 100%;
+}
+
+.rich-autocomplete.multi {
+    cursor: text;
+}
+
+.rich-autocomplete .rich-autocomplete-multiselect li {
+    display: inline-block;
+    height: 28px;
+}
+
+.rich-autocomplete .rich-autocomplete-multiselect .search-field input {
+    width: 25px;
+    height: 26px;
+    padding: 0 5px;
+}
+
+.rich-autocomplete .rich-autocomplete-multiselect .selected-item {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    margin: 2px;
+    height: 21px;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 1px 5px 0;
+}
+
+.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item.rich-autocomplete-disabled {
+    color: #ddd;
+}
+
+.rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item.rich-autocomplete-disabled.highlighted {
+    background-color: #fafafa;
 }
 
 /*
