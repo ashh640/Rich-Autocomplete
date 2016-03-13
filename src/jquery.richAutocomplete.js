@@ -17,7 +17,15 @@
         this.bindEvents();
 
         //render the list initially
-        this.updateList();
+        if (this.options.paging === false) {
+            this.updateList();
+        } else {
+            //set current page initially to zero
+            this.currentPage = 0;
+
+            //load the first page
+            this.loadPage(0);
+        }
     }
 
     RichAutocomplete.prototype.init = function() {
@@ -91,6 +99,21 @@
             //enter key pressed
             if (event.keyCode === 13) context.selectHighlighted.apply(context, [event]);
         });
+
+        this.list.scroll(function(event) {
+            //only applicable if paging is enabled
+            if(context.options.paging === false) return;
+
+            //collect some positioning and size values
+            var scrollTop = context.list.scrollTop();
+            var listHeight = context.list.height();
+            var scrollPosition = scrollTop + listHeight;
+            var maxScrollHeight = context.list[0].scrollHeight - 20;
+
+            if(scrollPosition > maxScrollHeight) {
+                context.loadNextPage.apply(context);
+            }
+        });
     };
 
     RichAutocomplete.prototype.showList = function() {
@@ -109,9 +132,50 @@
         var searchTerm = this.element.val();
 
         //filter items based on search terms
-        this.filteredItems = this.options.filter(this.items, searchTerm);
+        if (this.options.paging === false) {
+            this.filteredItems = this.options.filter(this.items, searchTerm);
 
-        //update the list
+            //update the list
+            this.updateList();
+        } else {
+            //reset to the first page
+            this.currentPage = 0;
+
+            //load results dynamically
+            this.loadPage(0);
+        }
+    };
+
+    RichAutocomplete.prototype.loadPage = function(pageNumber) {
+        //show the loading spinner
+        this.spinner.show();
+
+        //empty list if first page
+        if (pageNumber === 0) {
+            this.filteredItems = [];
+        }
+
+        var searchTerm = this.element.val();
+
+        //load page
+        var nextPage = this.options.loadPage(searchTerm, pageNumber, this.options.pageSize);
+
+        //check if a jquery promise
+        if (nextPage.promise) {
+
+        } else {
+            //store the new
+            this.filteredItems = this.filteredItems.concat(nextPage);
+            this.updateDynamicList();
+            this.spinner.hide();
+        }
+    };
+
+    RichAutocomplete.prototype.loadNextPage = function() {
+        this.loadPage(++this.currentPage);
+    };
+
+    RichAutocomplete.prototype.updateDynamicList = function() {
         this.updateList();
     };
 
@@ -335,6 +399,8 @@
         var defaultOptions = {
             maxHeight: 200,
             items: [],
+            paging: false,
+            pageSize: 0,
             extractText: function(item) {
                 return item;
             },
@@ -349,7 +415,10 @@
             emptyRender: function() {
                 return '<p>No Matches Found...</p>';
             },
-            select: function(item) {}
+            select: function(item) {},
+            loadPage: function(searchTerm, pageNumber) {
+                return [];
+            }
         };
 
         options = $.extend(defaultOptions, options);
