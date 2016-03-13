@@ -6,7 +6,7 @@ Complete with keyboard navigation for accessibility.
 
 See several demos of Rich-Autocomplete in action here: http://beginninghere.co.uk/richautocomplete/example/
 
-![Image of Rich Autocomplete](http://beginninghere.co.uk/richautocomplete/example-image.png)
+<img src="http://beginninghere.co.uk/richautocomplete/example-image.png" width="200">
 
 ## Installation
 
