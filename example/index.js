@@ -61,4 +61,31 @@
         pageSize: 20
     });
 
+    /*
+        Dynamic list of countries - server loading (simulated)
+    */
+
+    var loadServerPage = function(searchTerm, pageNumber, pageSize) {
+        var deferred = $.Deferred();
+
+        setTimeout(function() {
+            if (searchTerm === '')
+                deferred.resolve(country_list.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize));
+
+            var searchedCountries = country_list.filter(function(item) {
+                return item.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
+            });
+
+            deferred.resolve(searchedCountries.slice((pageNumber * pageSize), (pageNumber * pageSize) + pageSize));
+        }, 1000);
+
+        return deferred.promise();
+    };
+
+    $('#country-server-field').richAutocomplete({
+        loadPage: loadServerPage,
+        paging: true,
+        pageSize: 20
+    });
+
 })();

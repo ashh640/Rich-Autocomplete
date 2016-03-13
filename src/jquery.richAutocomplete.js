@@ -22,6 +22,7 @@
         } else {
             //set current page initially to zero
             this.currentPage = 0;
+            this.loading = false;
 
             //load the first page
             this.loadPage(0);
@@ -101,8 +102,8 @@
         });
 
         this.list.scroll(function(event) {
-            //only applicable if paging is enabled
-            if(context.options.paging === false) return;
+            //only applicable if paging is enabled and we arent currently loading
+            if(context.options.paging === false || context.loading === true) return;
 
             //collect some positioning and size values
             var scrollTop = context.list.scrollTop();
@@ -147,8 +148,16 @@
     };
 
     RichAutocomplete.prototype.loadPage = function(pageNumber) {
+        var context = this;
+
+        //if we are currently loading then stop here
+        if(this.loading === true) return;
+
+        //remember we are in fact loading so dont load another page in the mean time
+        this.loading = true;
+
         //show the loading spinner
-        this.spinner.show();
+        if(this.options.showSpinner) this.spinner.show();
 
         //empty list if first page
         if (pageNumber === 0) {
@@ -163,15 +172,38 @@
         //check if a jquery promise
         if (nextPage.promise) {
 
+            nextPage.done(function(result) {
+                //store the new
+                context.filteredItems = context.filteredItems.concat(result);
+
+                //load the new page
+                context.updateDynamicList.apply(context);
+
+                //hide the spinner as we have finished loading
+                context.spinner.hide();
+
+                //inform that we have finished loading
+                context.loading = false;
+            });
+
         } else {
             //store the new
             this.filteredItems = this.filteredItems.concat(nextPage);
+
+            //load the new page
             this.updateDynamicList();
+
+            //hide the spinner as we have finished loading
             this.spinner.hide();
+            this.loading = false;
         }
     };
 
     RichAutocomplete.prototype.loadNextPage = function() {
+        //dont do anything if we are currently loading
+        if(this.loading) return;
+
+        //load the next page and remember which page we are now on
         this.loadPage(++this.currentPage);
     };
 
@@ -401,6 +433,7 @@
             items: [],
             paging: false,
             pageSize: 0,
+            showSpinner: true,
             extractText: function(item) {
                 return item;
             },
