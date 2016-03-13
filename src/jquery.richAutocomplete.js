@@ -235,7 +235,28 @@
     };
 
     RichAutocomplete.prototype.updateDynamicList = function() {
+
+        //store any highlighted item
+        var highlightedData = this.list.find('.highlighted').first().data('item-data');
+
+        //re create the list
         this.updateList();
+
+        //rehighlight the item
+        if(highlightedData) {
+
+            var listItems = this.list.find('.rich-autocomplete-list-item');
+
+            listItems.each(function(index, element) {
+                var data = $(element).data('item-data');
+
+                if(data === highlightedData) {
+                    $(element).addClass('highlighted');
+                    return false;
+                }
+            });
+
+        }
     };
 
     RichAutocomplete.prototype.updateList = function() {
