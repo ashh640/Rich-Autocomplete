@@ -113,6 +113,35 @@ SOFTWARE.*/
     background-color: #fafafa;
 }
 
+.rich-autocomplete-remove-icon {
+    position: relative;
+    display: inline-block;
+    width: 12px;
+    height: 13px;
+    margin-left: 6px;
+    opacity: 0.3;
+}
+
+.rich-autocomplete-remove-icon:hover {
+  opacity: 1;
+}
+
+.rich-autocomplete-remove-icon:before, .rich-autocomplete-remove-icon:after {
+  position: absolute;
+  left: 5px;
+  content: ' ';
+  height: 15px;
+  width: 2px;
+  background-color: #333;
+}
+.rich-autocomplete-remove-icon:before {
+  transform: rotate(45deg);
+}
+.rich-autocomplete-remove-icon:after {
+  transform: rotate(-45deg);
+}
+
+
 /*
     CSS Spinner
 */

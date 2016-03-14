@@ -560,6 +560,8 @@
     };
 
     RichAutocomplete.prototype.addSelectedItem = function (item) {
+        var context = this;
+
         //this is only applicable if multiselect is enabled
         if(this.options.multiSelect === false) return;
 
@@ -573,7 +575,27 @@
         var extractedText = this.options.extractText(item);
 
         //add the item to the list
-        $('<li class="selected-item">' + extractedText + '</li>').insertBefore(this.element.parent());
+        var selectedItem = $('<li class="selected-item">' + extractedText + '<span class="rich-autocomplete-remove-icon"></span></li>');
+
+        //store item data with element
+        selectedItem.data('item-data', item);
+
+        //watch for click event on tablet
+        selectedItem.click(function(event) {
+
+            var target = $(event.target);
+            var tablet = target.parent();
+
+            //check if remove icon clicked
+            if(target.hasClass('rich-autocomplete-remove-icon')) {
+                var itemData = tablet.data('item-data');
+                context.removeSelectedItem.apply(context, [itemData]);
+            }
+
+            event.stopPropagation();
+        });
+
+        selectedItem.insertBefore(this.element.parent());
 
         //store the selected items
         this.selectedItems.push(item);
@@ -581,10 +603,49 @@
         //clear the search field
         this.element.val('');
 
+        //calculate the height of the container
         var containerHeight = $('.rich-autocomplete-multiselect').first().get(0).scrollHeight;
 
         //resize the container accordingly
         this.container.height(containerHeight);
+    };
+
+    RichAutocomplete.prototype.removeSelectedItem = function(item) {
+        var context = this;
+
+        if(this.options.multiSelect === false) return;
+
+        //ensure the item we are trying to deselect has been selected
+        if(!this.itemIsSelected(item)) return;
+
+        //remove selected item from array
+        this.selectedItems.forEach(function(selectedItem, idx) {
+            if(selectedItem === item) {
+                context.selectedItems.splice(idx, 1);
+                return false;
+            }
+        });
+
+        //remove tablet from dom
+        var tablets = this.container.find('.selected-item');
+
+        tablets.each(function(idx, element) {
+            var elementData = $(element).data('item-data');
+
+            if(elementData === item) {
+                $(element).remove();
+                return false;
+            }
+        });
+
+        //calculate the height of the container
+        var containerHeight = $('.rich-autocomplete-multiselect').first().get(0).scrollHeight;
+
+        //resize the container accordingly
+        this.container.height(containerHeight);
+
+        //redraw list
+        this.updateList();
     };
 
     RichAutocomplete.prototype.itemIsSelected = function (item) {
