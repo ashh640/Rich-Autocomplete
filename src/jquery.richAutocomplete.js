@@ -155,6 +155,9 @@
 
         this.element.blur(function(event) {
 
+            //reset any pending removal tablet
+            context.resetClear();
+
             //if we have a placeholder and no selected items then show it
             if(context.placeholder && context.selectedItems.length === 0 && context.element.val().length === 0) context.placeholder.show();
 
@@ -176,6 +179,10 @@
 
             //enter key pressed
             if (event.keyCode === 13) context.selectHighlighted.apply(context, [event]);
+
+            //backspace key pressed
+            if (event.keyCode === 8) context.clearLastSelected.apply(context, [event]);
+            else context.resetClear();
         });
 
         this.list.scroll(function(event) {
@@ -415,6 +422,9 @@
     };
 
     RichAutocomplete.prototype.selectItem = function(item) {
+
+        //reset any pending removal tablet
+        this.resetClear();
 
         //extract the text from the selected data object
         var itemText = this.options.extractText(item);
@@ -664,6 +674,48 @@
         });
 
         return isSelected;
+    };
+
+    RichAutocomplete.prototype.clearLastSelected = function (event) {
+        var context = this;
+
+        //if mode is not multiselect or no items selected or search string not empty
+        if(this.options.multiSelect === false || this.selectedItems.length === 0 || this.element.val().length > 0) return;
+
+        //otherwise get tablets
+        var targetTablet = this.container.find('.selected-item').last();
+
+        //check to see if pending removal state is applied
+        if(targetTablet.hasClass('pending-removal')) {
+
+            var targetData = targetTablet.data('item-data');
+
+            //remove selected item from array
+            this.selectedItems.forEach(function(selectedItem, idx) {
+                if(selectedItem === targetData) {
+                    context.selectedItems.splice(idx, 1);
+                    return false;
+                }
+            });
+
+            //remove tablet from dom
+            var tablets = this.container.find('.selected-item');
+
+            tablets.each(function(idx, element) {
+                var elementData = $(element).data('item-data');
+
+                if(elementData === targetData) {
+                    $(element).remove();
+                    return false;
+                }
+            });
+        } else {
+            targetTablet.addClass('pending-removal');
+        }
+    };
+
+    RichAutocomplete.prototype.resetClear = function () {
+        this.container.find('.selected-item').removeClass('pending-removal');
     };
 
     $.fn.richAutocomplete = function(options) {

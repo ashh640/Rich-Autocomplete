@@ -105,6 +105,12 @@ SOFTWARE.*/
     padding: 1px 5px 0;
 }
 
+.rich-autocomplete .rich-autocomplete-multiselect .selected-item.pending-removal {
+    background-color: #c7254e;
+    color: #f9f2f4;
+    border-color: #c2244b;
+}
+
 .rich-autocomplete .rich-autocomplete-list .rich-autocomplete-list-item.rich-autocomplete-disabled {
     color: #ddd;
 }
