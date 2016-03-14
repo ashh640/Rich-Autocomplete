@@ -156,7 +156,7 @@
         this.element.blur(function(event) {
 
             //if we have a placeholder and no selected items then show it
-            if(context.placeholder && context.selectedItems.length === 0) context.placeholder.show();
+            if(context.placeholder && context.selectedItems.length === 0 && context.element.val().length === 0) context.placeholder.show();
 
             context.hideList.apply(context, [event]);
         });
@@ -646,6 +646,11 @@
 
         //redraw list
         this.updateList();
+
+        //show placeholder if necessary
+        if(this.placeholder && this.selectedItems.length === 0 && this.element.val().length === 0) {
+            this.placeholder.show();
+        }
     };
 
     RichAutocomplete.prototype.itemIsSelected = function (item) {
