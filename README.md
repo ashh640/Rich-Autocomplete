@@ -225,4 +225,4 @@ Planned Features:
 
 ## License
 
-MIT License - use this as you wish, in both free or commercial projects. Attribution or a link to this github page is always welcome, but certainly not mandatory.
+MIT License - use this as you wish, in both free or commercial projects.
